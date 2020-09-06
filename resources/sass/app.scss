@@ -1,8 +1,19 @@
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@tailwind base;
 
-// Variables
-@import 'variables';
+@tailwind components;
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@tailwind utilities;
+
+.button{
+    background-color: theme('colors.blue');
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 2px 7px 0 #b0eaff;
+    font-size: 14px;
+    padding: .5rem 1.3rem;
+}
+
+.card{
+    @apply .bg-white .rounded-lg .shadow .p-5
+}
