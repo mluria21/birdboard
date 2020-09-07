@@ -14,7 +14,7 @@ class ProjectsTasksTest extends TestCase
 
     /** @test */
     public function a_project_can_have_tasks(){
-        
+
         //$this->withoutExceptionHandling();
         $this->signIn();
 
@@ -59,6 +59,23 @@ class ProjectsTasksTest extends TestCase
             ->create();
 
         $this->patch($project->path() .'/tasks/' .$project->tasks[0]->id,[
+            'body' => 'changed'
+        ]);
+
+        $this->assertDatabaseHas('tasks',[
+            'body' => 'changed'
+        ]);
+    }
+
+    /** @test */
+    public function a_task_can_b_completed()
+    {
+        $project = app(ProjectFactory::class)
+            ->ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
+
+        $this->patch($project->path() .'/tasks/' .$project->tasks[0]->id,[
             'body' => 'changed',
             'completed' => true
         ]);
@@ -66,6 +83,30 @@ class ProjectsTasksTest extends TestCase
         $this->assertDatabaseHas('tasks',[
             'body' => 'changed',
             'completed' => true
+        ]);
+    }
+
+    /** @test */
+    public function a_task_can_b_incomplete()
+    {
+        $project = app(ProjectFactory::class)
+            ->ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
+
+        $this->patch($project->path() .'/tasks/' .$project->tasks[0]->id,[
+            'body' => 'changed',
+            'completed' => true
+        ]);
+
+        $this->patch($project->path() .'/tasks/' .$project->tasks[0]->id,[
+            'body' => 'changed',
+            'completed' => false
+        ]);
+
+        $this->assertDatabaseHas('tasks',[
+            'body' => 'changed',
+            'completed' => false
         ]);
     }
 

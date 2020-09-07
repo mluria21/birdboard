@@ -2,8 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Task;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Setup\ProjectFactory;
 
 class TaskTest extends TestCase
 {
@@ -12,16 +14,24 @@ class TaskTest extends TestCase
     /** @test */
     public function it_can_complete()
     {
-        $project = factory('App\Project')->create();
+        $task = factory(Task::class)->create();
 
-        $tesk = $project->addTask(factory('App\Task',1)->raw());
+        $this->assertFalse($task->completed);
 
-        dd($tesk->completed);
+        $task->complete();
 
-        $this->assertFalse($tesk->completed);
+        $this->assertTrue($task->fresh()->completed);
+    }
 
-        $tesk->complete();
-        
-        $this->assertTrue($tesk->completed);
+    /** @test */
+    public function it_can_incomplete()
+    {
+        $task = factory(Task::class)->create(['completed' => true]);
+
+        $this->assertTrue($task->completed);
+
+        $task->incomplete();
+
+        $this->assertFalse($task->fresh()->completed);
     }
 }

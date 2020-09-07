@@ -8,6 +8,8 @@ class Project extends Model
 {
     protected $guarded = [];
 
+    public $old = [];
+
     public function path()
     {
         return "/projects/{$this->id}";
@@ -21,10 +23,6 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    public function activity(){
-        return $this->hasMany(Activity::class);
-    }
-
     public function addTask($body){
 
         $task = $this->tasks()->create($body);
@@ -32,11 +30,18 @@ class Project extends Model
         return $task;
     }
 
-    public function recordActivity($type)
+    public function activity(){
+        return $this->hasMany(Activity::class)->latest();
+    }
+
+    public function recordActivity($description)
     {
-        \App\Activity::create([
-            'project_id'=>$this->id,
-            'description'=>$type
+        $this->activity()->create([
+            'description' => $description,
+            'changes'=>[
+                'before'=>array_diff($this->old,$this->getAttributes()),
+                'after'=> array_diff($this->getAttributes(),$this->old)
+            ]
         ]);
     }
 }
